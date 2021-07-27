@@ -1,0 +1,160 @@
+﻿
+<html>
+<head>
+    <title>Carcassonne Helper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/carcassonne.js"></script>
+    <style>
+        .table td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="item">
+
+        <div class="row">
+            @*<h1>Carcassonne Helper</h1>*@
+            <table id="cards" class="table table-bordered">
+                <tbody>
+                    <tr>
+
+                        <td>
+                            <img src="~/img/cloister.png" alt="cloister">
+                            <div><span>4</span> / 4</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city1.png" alt="city1">
+                            <div><span>5</span> / 5</div>
+                        </td>
+                        <td>
+                            <img src="~/img/road2ns.png" alt="road2ns">
+                            <div><span>8</span> / 8</div>
+                        </td>
+                        <td>
+                            <img src="~/img/road2sw.png" alt="road2sw">
+                            <div><span>9</span> / 9</div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <img src="~/img/city11we.png" alt="city11we">
+                            <div><span>3</span> / 3</div>
+                        </td>
+
+                        <td>
+                            <img src="~/img/city1rse.png" alt="city1rse">
+                            <div><span>3</span> / 3</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city1rsw.png" alt="city1rsw">
+                            <div><span>3</span> / 3</div>
+                        </td>
+                        <td>
+                            <img src="~/img/road3.png" alt="road3">
+                            <div><span>4</span> / 4</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="~/img/city3.png" alt="city3">
+                            <div><span>3</span> / 3</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city1rwe.png" alt="city1rwe">
+                            <div><span>3</span> / 3</div>
+                        </td>
+
+                        <td>
+                            <img src="~/img/city1rswe.png" alt="city1rswe">
+                            <div><span>3</span> / 3</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city2nwr.png" alt="city2nwr">
+                            <div><span>3</span> / 3</div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td>
+                            <img src="~/img/city11ne.png" alt="city11ne">
+                            <div><span>2</span> / 2</div>
+                        </td>
+
+
+                        <td>
+                            <img src="~/img/city2nwsr.png" alt="city2nwsr">
+                            <div><span>2</span> / 2</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city2nws.png" alt="city2nws">
+                            <div><span>2</span> / 2</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city2nw.png" alt="city2nw">
+                            <div><span>3</span> / 3</div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="~/img/city3r.png" alt="city3r">
+                            <div><span>1</span> / 1</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city3sr.png" alt="city3sr">
+                            <div><span>2</span> / 2</div>
+                        </td>
+                        <td>
+                            <img src="~/img/city2wes.png" alt="city2wes">
+                            <div><span>2</span> / 2</div>
+                        </td>
+                        <td>
+                            <img src="~/img/cloisterr.png" alt="cloisterr">
+                            <div><span>2</span> / 2</div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="~/img/city4.png" alt="city4">
+                            <div><span>1</span> / 1</div>
+                        </td>
+
+                        <td>
+                            <img src="~/img/road4.png" alt="road4">
+                            <div><span>1</span> / 1</div>
+                        </td>
+
+                        <td>
+                            <img src="~/img/city2we.png" alt="city2we">
+                            <div><span>1</span> / 1</div>
+                        </td>
+
+                        <td>
+                            <img src="~/img/city3s.png" alt="city3s">
+                            <div><span>1</span> / 1</div>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="row">
+            <button class="btn btn-primary col-xs-12 col-sm-12 col-md-12 col-lg-12" id="button_undo" type="button"><div><span id="total">72</span> titles remain</div>Undo Click</button>
+        </div>
+    </div>
+
+
+</body>
+</html>
