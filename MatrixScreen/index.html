@@ -22,7 +22,7 @@
 		<script>
 			function DeleteText(){
 				$('.MatrixText').each(function(){
-					if ($(this).position().top > window.screen.availHeight)
+					if ($(this).position().top > window.screen.height)
 					{
 						$(this).remove();
 						textCount-=1;
@@ -65,7 +65,7 @@
 				
 				var n = getRandomArbitrary(0,1);
 				var tp =-1* getRandomArbitrary(300,400);
-				var lf = getRandomArbitrary(0,window.screen.availWidth);
+				var lf = getRandomArbitrary(0,window.screen.width );
 				var sp = getRandomArbitrary(1,5);				
 				for (step = 0; step < n && textCount < 300; step++) {
 					textCount+=1
