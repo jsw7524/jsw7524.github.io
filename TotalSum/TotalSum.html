@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <style>
+        input {
+            text-align: right;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="h1 text-center">
+        測試1
+    </div>
+    <div>
+        <table class="table table-striped">
+            <tr>
+                <th>名稱</th>
+                <th>數值1</th>
+                <th>數值2</th>
+                <th>列合計</th>
+            </tr>
+
+            <tr>
+                <td>王小明</td>
+                <td><input type="text" class="r1 c1" value=0></td>
+                <td><input type="text" class="r1 c2" value=0></td>
+                <td><input type="text" class="c3" value=0 id="row1sum"></td>
+            </tr>
+            <tr>
+                <td>陳小婷</td>
+                <td><input type="text" class="r2 c1" value=0></td>
+                <td><input type="text" class="r2 c2" value=0></td>
+                <td><input type="text" class="c3" value=0 id="row2sum"></td>
+            </tr>
+            <tr>
+                <td>王小橋</td>
+                <td><input type="text" class="r3 c1" value=0></td>
+                <td><input type="text" class="r3 c2" value=0></td>
+                <td><input type="text" class="c3" value=0 id="row3sum"></td>
+            </tr>
+            <tr>
+                <td>行合計</td>
+                <td><input type="text" class="r4" value=0 id="col1sum"></td>
+                <td><input type="text" class="r4" value=0 id="col2sum"></td>
+                <td><input type="text" class="c3" value=0 id="col3sum"></td>
+            </tr>
+        </table>
+        <span id='log'></span>
+    </div>
+    <script>
+        function updateSum(row, dest) {
+            tmp = 0
+            $(row).each(function(index, element) {
+                tmp += parseInt(element.value)
+            });
+            $(dest).val(tmp)
+        }
+
+        function updateValue(e) {
+            updateSum('.r1', '#row1sum')
+            updateSum('.r2', '#row2sum')
+            updateSum('.r3', '#row3sum')
+            updateSum('.c1', '#col1sum')
+            updateSum('.c2', '#col2sum')
+            updateSum('.r4', '#col3sum')
+        }
+
+        $(document).ready(function() {
+            $('input').on('change', updateValue)
+        });
+    </script>
+</body>
+
+</html>
