@@ -146,5 +146,14 @@ function checkMouseCollision(ball) {
     return distance <= ball.radius;
 }
 
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// Set the initial canvas size
+resizeCanvas();
 // Start the simulation loop
 loop();
