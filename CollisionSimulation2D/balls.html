@@ -16,7 +16,19 @@
     </style>
 </head>
 <body>
-    <canvas id="simulation"></canvas>
+    <canvas id="simulation" width="1920" height="1080"></canvas>
     <script src="simulation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function (event) {
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            init();
+            loop();
+        })
+    </script>
 </body>
 </html>

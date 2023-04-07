@@ -65,26 +65,19 @@ function resolveCollision(ball1, ball2) {
     ball2.dy += impulse * unitVectorY;
 }
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-window.addEventListener('resize', resizeCanvas);
-
-// Set the initial canvas size
-resizeCanvas();
-
-
 const canvas = document.getElementById('simulation');
 const context = canvas.getContext('2d');
 
 const numberOfBalls = 50;
 const balls = [];
 
-for (let i = 0; i < numberOfBalls; i++) {
-    balls.push(createRandomBall(canvas.width, canvas.height));
+function init() {
+    for (let i = 0; i < numberOfBalls; i++) {
+        balls.push(createRandomBall(canvas.width, canvas.height));
+    }
 }
+
+
 
 function update() {
     for (let i = 0; i < balls.length; i++) {
@@ -158,4 +151,4 @@ function checkMouseCollision(ball) {
 }
 
 // Start the simulation loop
-loop();
+/*loop();*/
