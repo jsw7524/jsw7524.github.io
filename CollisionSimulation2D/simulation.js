@@ -68,7 +68,7 @@ function resolveCollision(ball1, ball2) {
 const canvas = document.getElementById('simulation');
 const context = canvas.getContext('2d');
 
-const numberOfBalls = 25;
+const numberOfBalls = 50;
 const balls = [];
 
 for (let i = 0; i < numberOfBalls; i++) {
