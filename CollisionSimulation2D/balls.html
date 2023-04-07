@@ -13,9 +13,11 @@
 <body>
     <canvas id="simulation" width="1920" height="1080"></canvas>
     <script>
-        canvas = document.getElementById("simulation");
-        canvas.width = document.body.clientWidth; 
-        canvas.height = document.body.clientHeight; 
+        window.addEventListener('DOMContentLoaded', () => {
+            canvas = document.getElementById("simulation");
+            canvas.width = window.screen.width;
+            canvas.height = window.screen.height;
+            });
     </script>
     <script src="simulation.js"></script>
 </body>
