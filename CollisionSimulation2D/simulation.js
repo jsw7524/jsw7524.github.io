@@ -71,7 +71,8 @@ const context = canvas.getContext('2d');
 const numberOfBalls = 25;
 const balls = [];
 
-function init() {
+function init(n) {
+    numberOfBalls = n
     for (let i = 0; i < numberOfBalls; i++) {
         balls.push(createRandomBall(canvas.width, canvas.height));
     }
