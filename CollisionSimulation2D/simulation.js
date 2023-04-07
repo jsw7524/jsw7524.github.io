@@ -78,7 +78,6 @@ function init() {
 }
 
 
-
 function update() {
     for (let i = 0; i < balls.length; i++) {
         const ball = balls[i];
