@@ -65,6 +65,17 @@ function resolveCollision(ball1, ball2) {
     ball2.dy += impulse * unitVectorY;
 }
 
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// Set the initial canvas size
+resizeCanvas();
+
+
 const canvas = document.getElementById('simulation');
 const context = canvas.getContext('2d');
 
@@ -146,14 +157,5 @@ function checkMouseCollision(ball) {
     return distance <= ball.radius;
 }
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-window.addEventListener('resize', resizeCanvas);
-
-// Set the initial canvas size
-resizeCanvas();
 // Start the simulation loop
 loop();
