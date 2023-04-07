@@ -11,14 +11,26 @@
     </style>
 </head>
 <body>
-    <canvas id="simulation" ></canvas>
+    <canvas id="simulation" width="1920" height="1080"></canvas>
+    <script src="simulation.js"></script>
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            canvas = document.getElementById("simulation");
-            canvas.width = window.screen.width;
-            canvas.height = window.screen.height;
-            });
+            (function () {
+                const canvas = document.getElementById('simulation');
+                const context = canvas.getContext('2d');
+                window.addEventListener('resize', resizeCanvas, false);
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    drawStuff();
+                }
+                resizeCanvas();
+                function drawStuff() {
+                    loop();
+                }
+            })();
+        });
     </script>
-    <script src="simulation.js"></script>
 </body>
 </html>
