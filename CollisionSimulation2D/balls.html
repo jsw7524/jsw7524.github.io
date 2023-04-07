@@ -13,24 +13,5 @@
 <body>
     <canvas id="simulation" width="1920" height="1080"></canvas>
     <script src="simulation.js"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            (function () {
-                const canvas = document.getElementById('simulation');
-                const context = canvas.getContext('2d');
-                window.addEventListener('resize', resizeCanvas, false);
-
-                function resizeCanvas() {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    drawStuff();
-                }
-                resizeCanvas();
-                function drawStuff() {
-                    loop();
-                }
-            })();
-        });
-    </script>
 </body>
 </html>

@@ -147,4 +147,4 @@ function checkMouseCollision(ball) {
 }
 
 // Start the simulation loop
-//loop();
+loop();
