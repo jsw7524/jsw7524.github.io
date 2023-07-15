@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minesweeper</title>
+    <style>
+        td {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            text-align: center;
+        }
+
+        .revealed {
+            background: #ddd;
+        }
+
+        .mine {
+            background: red;
+        }
+
+        .flag {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <p id="timer">Time elapsed: 0 seconds</p>
+    <p id="mines">Mines remaining: 40</p>
+    <table id="board"></table>
+    <script>
+        var board = [];
+        var SIZE = 20;
+        var MINES = 40;
+        var minesRemaining = MINES;
+        var timer = 0;
+        setInterval(function() {
+            timer++;
+            document.getElementById('timer').innerText = 'Time elapsed: ' + timer + ' seconds';
+        }, 1000);
+
+        function generateBoard() {
+            for (var i = 0; i < SIZE; i++) {
+                board[i] = [];
+                for (var j = 0; j < SIZE; j++) {
+                    board[i][j] = {mine: false, revealed: false, flagged: false};
+                }
+            }
+            for (var i = 0; i < MINES; i++) {
+                var x, y;
+                do {
+                    x = Math.floor(Math.random() * SIZE);
+                    y = Math.floor(Math.random() * SIZE);
+                } while (board[x][y].mine);
+                board[x][y].mine = true;
+            }
+        }
+
+        function drawBoard() {
+            var table = document.getElementById('board');
+            table.innerHTML = '';
+            for (var i = 0; i < SIZE; i++) {
+                var tr = document.createElement('tr');
+                for (var j = 0; j < SIZE; j++) {
+                    var td = document.createElement('td');
+                    td.onmousedown = (function(i, j) {
+                        return function(event) {
+                            if (event.button == 2) {
+                                event.preventDefault();
+                                flag(i, j);
+                            } else if (event.button == 0) {
+                                reveal(i, j);
+                            }
+                        }
+                    })(i, j);
+                    if (board[i][j].revealed) {
+                        td.classList.add('revealed');
+                        if (board[i][j].mine) {
+                            td.innerText = 'M';
+                            td.className = 'mine';
+                        } else {
+                            var count = getMineCount(i, j);
+                            td.innerText = count > 0 ? count : '';
+                        }
+                    }
+                    if (board[i][j].flagged) {
+                        td.innerText = 'F';
+                        td.classList.add('flag');
+                    }
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+        }
+
+        function getMineCount(x, y) {
+            var count = 0;
+            for (var dx = -1; dx <= 1; dx++) {
+                for (var dy = -1; dy <= 1; dy++) {
+                    var nx = x + dx;
+                    var ny = y + dy;
+                    if (nx >= 0 && ny >= 0 && nx < SIZE && ny < SIZE && board[nx][ny].mine) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function reveal(x, y) {
+            if (board[x][y].revealed || board[x][y].flagged) return;
+            board[x][y].revealed = true;
+            if (board[x][y].mine) {
+                alert('Game over!');
+                location.reload();
+            } else if (getMineCount(x, y) == 0) {
+                for (var dx = -1; dx <= 1; dx++) {
+                    for (var dy = -1; dy <= 1; dy++) {
+                        var nx = x + dx;
+                        var ny = y + dy;
+                        if (nx >= 0 && ny >= 0 && nx < SIZE && ny < SIZE) {
+                            reveal(nx, ny);
+                        }
+                    }
+                }
+            }
+            drawBoard();
+        }
+
+        function flag(x, y) {
+            if (board[x][y].revealed) return;
+            board[x][y].flagged = !board[x][y].flagged;
+            minesRemaining += board[x][y].flagged ? -1 : 1;
+            document.getElementById('mines').innerText = 'Mines remaining: ' + minesRemaining;
+            drawBoard();
+        }
+        window.oncontextmenu = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+        generateBoard();
+        drawBoard();
+    </script>
+</body>
+</html>
