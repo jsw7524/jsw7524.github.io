@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>¤ë¾ä</title>
+    <title>æœˆæ›†</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .calendar {
@@ -59,45 +59,45 @@
 </head>
 <body>
 
-    <!-- ¤ë¾ä¥DÅé -->
+    <!-- æœˆæ›†ä¸»é«” -->
     <div class="calendar" id="calendar">
         <div id="calendarHeader">
-            <button id="prevMonth">¤W­Ó¤ë</button>
+            <button id="prevMonth">ä¸Šå€‹æœˆ</button>
             <span id="currentMonthYear"></span>
-            <button id="nextMonth">¤U­Ó¤ë</button>
+            <button id="nextMonth">ä¸‹å€‹æœˆ</button>
         </div>
         <table id="calendarBody">
-            <!-- ³o¸Ì·|°ÊºA¥Í¦¨¤é´Á -->
+            <!-- é€™è£¡æœƒå‹•æ…‹ç”Ÿæˆæ—¥æœŸ -->
         </table>
     </div>
 
-    <!-- ·í¤é¬¡°Ê¼ÒÀÀµøµ¡¡]Modal¡^ -->
+    <!-- ç•¶æ—¥æ´»å‹•æ¨¡æ“¬è¦–çª—ï¼ˆModalï¼‰ -->
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>·s¼W¬¡°Ê</h2>
-            ±q¡G<select id="startTime"></select> ¨ì <select id="endTime"></select><br>
-            ¼ĞÃD¡G<input type="text" id="eventTitle"><br>
-            ¤º®e¡G<textarea id="eventDescription"></textarea><br>
-            <button id="saveEvent">Àx¦s</button>
+            <h2>æ–°å¢æ´»å‹•</h2>
+            å¾ï¼š<select id="startTime"></select> åˆ° <select id="endTime"></select><br>
+            æ¨™é¡Œï¼š<input type="text" id="eventTitle"><br>
+            å…§å®¹ï¼š<textarea id="eventDescription"></textarea><br>
+            <button id="saveEvent">å„²å­˜</button>
         </div>
     </div>
 
     <script>
         $(document).ready(function () {
-            let events = {}; // Àx¦s©Ò¦³¬¡°Ê
+            let events = {}; // å„²å­˜æ‰€æœ‰æ´»å‹•
             const today = new Date();
             let currentMonth = today.getMonth();
             let currentYear = today.getFullYear();
             let selectedDate;
 
             function updateCalendar() {
-                $('#currentMonthYear').text(`${currentYear} ¦~ ${currentMonth + 1} ¤ë `);
+                $('#currentMonthYear').text(`${currentYear} å¹´ ${currentMonth + 1} æœˆ `);
                 $('#calendarBody').empty();
                 const firstDay = (new Date(currentYear, currentMonth)).getDay();
                 let date = 1;
 
-                $('#calendarBody').append('<thead>< tr ><th>¶g¤é</th><th>¶g¤@</th><th>¶g¤G</th><th>¶g¤T</th><th>¶g¥|</th><th>¶g¤­</th><th>¶g¤»</th></tr ></thead > ');
+                $('#calendarBody').append('<thead>< tr ><th>é€±æ—¥</th><th>é€±ä¸€</th><th>é€±äºŒ</th><th>é€±ä¸‰</th><th>é€±å››</th><th>é€±äº”</th><th>é€±å…­</th></tr ></thead > ');
 
                 for (let i = 0; i < 6; i++) {
                     let row = $('<tr></tr>');
@@ -125,7 +125,7 @@
             $('#calendarBody').on('click', 'td', function () {
                 if ($(this).text() !== '') {
                     $('#eventModal').show();
-                    selectedDate = $(this).text().split('\n')[0]; // ¨ú±o¤é´Á
+                    selectedDate = $(this).text().split('\n')[0]; // å–å¾—æ—¥æœŸ
                 }
             });
 
