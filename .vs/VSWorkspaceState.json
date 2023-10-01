@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\CollisionSimulation2D",
     "\\MatrixScreen",
+    "\\MineSweeper",
     "\\TotalSum"
   ],
+  "SelectedNode": "\\ReadMe",
   "PreviewInSolutionExplorer": false
 }

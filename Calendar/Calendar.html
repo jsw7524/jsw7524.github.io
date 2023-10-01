@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>月曆</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .calendar {
+            width: 100%;
+        }
+
+
+        #calendarBody {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            #calendarBody th {
+                border: 1px solid black;
+                width: 14%;
+                height: 50px;
+            }
+
+             #calendarBody td {
+                border: 1px solid black;
+                width: 14%;
+                height: 100px;
+            }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+        }
+
+        .event {
+            font-size: 12px;
+            color: red;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- 月曆主體 -->
+    <div class="calendar" id="calendar">
+        <div id="calendarHeader">
+            <button id="prevMonth">上個月</button>
+            <span id="currentMonthYear"></span>
+            <button id="nextMonth">下個月</button>
+        </div>
+        <table id="calendarBody">
+            <!-- 這裡會動態生成日期 -->
+        </table>
+    </div>
+
+    <!-- 當日活動模擬視窗（Modal） -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>新增活動</h2>
+            從：<select id="startTime"></select> 到 <select id="endTime"></select><br>
+            標題：<input type="text" id="eventTitle"><br>
+            內容：<textarea id="eventDescription"></textarea><br>
+            <button id="saveEvent">儲存</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let events = {}; // 儲存所有活動
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate;
+
+            function updateCalendar() {
+                $('#currentMonthYear').text(`${currentYear} 年 ${currentMonth + 1} 月 `);
+                $('#calendarBody').empty();
+                const firstDay = (new Date(currentYear, currentMonth)).getDay();
+                let date = 1;
+
+                $('#calendarBody').append('<thead>< tr ><th>週日</th><th>週一</th><th>週二</th><th>週三</th><th>週四</th><th>週五</th><th>週六</th></tr ></thead > ');
+
+                for (let i = 0; i < 6; i++) {
+                    let row = $('<tr></tr>');
+                    for (let j = 0; j < 7; j++) {
+                        if (i === 0 && j < firstDay) {
+                            row.append('<td></td>');
+                        } else if (date > 31) {
+                            break;
+                        } else {
+                            let cell = $(`<td>${date}</td>`);
+                            let eventKey = `${currentYear}-${currentMonth + 1}-${date}`;
+                            if (events[eventKey]) {
+                                cell.append(`<div class="event">${events[eventKey].title} (${events[eventKey].start}-${events[eventKey].end})</div>`);
+                            }
+                            row.append(cell);
+                            date++;
+                        }
+                    }
+                    $('#calendarBody').append(row);
+                }
+            }
+
+            updateCalendar();
+
+            $('#calendarBody').on('click', 'td', function () {
+                if ($(this).text() !== '') {
+                    $('#eventModal').show();
+                    selectedDate = $(this).text().split('\n')[0]; // 取得日期
+                }
+            });
+
+            for (let i = 0; i < 24; i++) {
+                $('#startTime, #endTime').append(`<option value="${i}">${i}:00</option>`);
+            }
+
+            $('.close').click(function () {
+                $('#eventModal').hide();
+            });
+
+            $('#saveEvent').click(function () {
+                let eventKey = `${currentYear}-${currentMonth + 1}-${selectedDate}`;
+                let startTime = $('#startTime').val();
+                let endTime = $('#endTime').val();
+                let title = $('#eventTitle').val();
+                events[eventKey] = {
+                    start: startTime,
+                    end: endTime,
+                    title: title
+                };
+                updateCalendar();
+                $('#eventModal').hide();
+            });
+
+            $('#prevMonth').click(function () {
+                if (currentMonth === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
+                updateCalendar();
+            });
+
+            $('#nextMonth').click(function () {
+                if (currentMonth === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                updateCalendar();
+            });
+        });
+    </script>
+
+</body>
+</html>
