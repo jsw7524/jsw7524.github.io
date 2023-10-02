@@ -85,7 +85,16 @@
 
     <script>
         $(document).ready(function () {
-            let events = {}; // 儲存所有活動
+            let events = {};
+            
+            if ("activities" in localStorage)
+            {
+                var activities = JSON.parse(localStorage.getItem("activities"));
+                events =  activities
+            }
+
+
+            
             const today = new Date();
             let currentMonth = today.getMonth();
             let currentYear = today.getFullYear();
@@ -97,7 +106,7 @@
                 const firstDay = (new Date(currentYear, currentMonth)).getDay();
                 let date = 1;
 
-                $('#calendarBody').append('<thead>< tr ><th>週日</th><th>週一</th><th>週二</th><th>週三</th><th>週四</th><th>週五</th><th>週六</th></tr ></thead > ');
+                $('#calendarBody').append('<thead><tr><th>週日</th><th>週一</th><th>週二</th><th>週三</th><th>週四</th><th>週五</th><th>週六</th></tr></thead>');
 
                 for (let i = 0; i < 6; i++) {
                     let row = $('<tr></tr>');
@@ -109,8 +118,10 @@
                         } else {
                             let cell = $(`<td>${date}</td>`);
                             let eventKey = `${currentYear}-${currentMonth + 1}-${date}`;
-                            if (events[eventKey]) {
-                                cell.append(`<div class="event">${events[eventKey].title} (${events[eventKey].start}-${events[eventKey].end})</div>`);
+                            if(events[eventKey]) {
+                                events[eventKey].forEach(event => {
+                                    cell.append(`<div class="event">${event.title} (${event.start}-${event.end})</div>`);
+                                });
                             }
                             row.append(cell);
                             date++;
@@ -125,7 +136,11 @@
             $('#calendarBody').on('click', 'td', function () {
                 if ($(this).text() !== '') {
                     $('#eventModal').show();
-                    selectedDate = $(this).text().split('\n')[0]; // 取得日期
+                    selectedDate = $(this)
+                        .children()     // 選取所有子元素
+                        .remove()       // 移除所有子元素
+                        .end()          // 返回到複製的<td>標籤
+                        .text(); // 取得日期
                 }
             });
 
@@ -142,11 +157,13 @@
                 let startTime = $('#startTime').val();
                 let endTime = $('#endTime').val();
                 let title = $('#eventTitle').val();
-                events[eventKey] = {
-                    start: startTime,
-                    end: endTime,
-                    title: title
-                };
+                let newEvent = {start: startTime, end: endTime, title: title};
+
+                if(!events[eventKey]) {
+                    events[eventKey] = [];
+                }
+                events[eventKey].push(newEvent);
+                localStorage.setItem("activities", JSON.stringify(events));
                 updateCalendar();
                 $('#eventModal').hide();
             });
