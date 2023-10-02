@@ -142,6 +142,7 @@
                         .end()          // 返回到複製的<td>標籤
                         .text(); // 取得日期
                 }
+                updateCalendar();
             });
 
             for (let i = 0; i < 24; i++) {
@@ -150,6 +151,7 @@
 
             $('.close').click(function () {
                 $('#eventModal').hide();
+                updateCalendar();
             });
 
             $('#saveEvent').click(function () {
