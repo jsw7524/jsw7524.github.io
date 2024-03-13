@@ -1,10 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\MatrixScreen",
-    "\\MineSweeper",
-    "\\TotalSum"
+    "\\Calendar"
   ],
-  "SelectedNode": "\\ReadMe",
+  "SelectedNode": "\\Calendar\\Calendar.html",
   "PreviewInSolutionExplorer": false
 }
