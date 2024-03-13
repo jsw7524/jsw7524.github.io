@@ -1,89 +1,94 @@
+<!DOCTYPE html>
 <html>
-	<head>
-		<style>
-			body {
-				background-color: black;
-				overflow: hidden;
-			}
-			.MatrixText {
-				font-family: monospace;
-				writing-mode: vertical-rl;
-				text-orientation: upright;
-				color: #00FF00;
-				position: absolute;
-			}
-		</style>	
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	</head>
-	<body>
-		<div id="Screen">
-			<p class="MatrixText" style="top: 195px; left: 90px;">Made by Jsw7524</p>					
-		</div>
-		<script>
-			function DeleteText(){
-				$('.MatrixText').each(function(){
-					if ($(this).position().top > window.screen.height)
-					{
-						$(this).remove();
-						textCount-=1;
-					}
-				  });
-			}
-			function MoveText(){
-				$('.MatrixText').each(function(){
-				
-					var newtop = $(this).position().top + parseFloat($(this).attr('data-speed'));
-					$(this).css('top', newtop + 'px');
-				  });
-
-			}
-			function getRandomArbitrary(min, max) {
-			  return Math.random() * (max - min) + min;
-			}
-			function getRandomInt(min, max) {
-				min = Math.ceil(min);
-				max = Math.floor(max);
-				return Math.floor(Math.random() * (max - min + 1)) + min;
-			}
-			function TextContent(){
-				var tmp=""
-				var length=4
-				while (1){
-					var v=getRandomInt(3,length)
-					if (v < 9)
-					{
-						tmp+=v%2
-						length+=1
-					}
-					else{
-						return tmp;
-					}
-				}
-			}
-			
-			function MakeText(){
-				
-				var n = getRandomArbitrary(0,1);
-				var tp =-1* getRandomArbitrary(300,400);
-				var lf = getRandomArbitrary(0,window.screen.width );
-				var sp = getRandomArbitrary(1,5);				
-				for (step = 0; step < n && textCount < 300; step++) {
-					textCount+=1
-					$( "#Screen" ).append( "<p data-speed="+sp+" class=\"MatrixText\" style=\"font-size: "+sp*5+"px;top:" + tp +"px; left: "+lf+"px;\">"+TextContent()+"</p>" );
-				}
-			}
-			
-			function UpdateScreen(){
-				MoveText();
-				DeleteText();
-				MakeText();
-			}
-			
-			$(document).ready(function(){
-				textCount=0
-				setInterval(UpdateScreen, 100);
-			});
-		</script>
-	</body>
+<head>
+    <title>Matrix Rain</title>
+    <style>
+        body {
+            background-color: black;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+        .MatrixText {
+            font-family: monospace;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            color: #00FF00;
+            position: absolute;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div id="Screen">
+	<p class="MatrixText" style="top: 195px; left: 90px;">Made by Jsw7524</p>	
+    </div>
 	
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var textCount = 0;
+
+        function DeleteText() {
+            $('.MatrixText').each(function() {
+                if ($(this).position().top > window.innerHeight) {
+                    $(this).remove();
+                    textCount -= 1;
+                }
+            });
+        }
+
+        function MoveText() {
+            $('.MatrixText').each(function() {
+                var newTop = $(this).position().top + parseFloat($(this).attr('data-speed'));
+                $(this).css('top', newTop + 'px');
+            });
+        }
+
+        function getRandomArbitrary(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function TextContent() {
+            var tmp = "";
+            var length = 4;
+            while (true) {
+                var v = getRandomInt(3, length);
+                if (v < 9) {
+                    tmp += v % 2;
+                    length += 1;
+                } else {
+                    return tmp;
+                }
+            }
+        }
+
+        function MakeText() {
+            var n = getRandomArbitrary(0, 1);
+            var tp = -1 * getRandomArbitrary(300, 400);
+            var lf = getRandomArbitrary(0, window.innerWidth);
+            var sp = getRandomArbitrary(1, 5);
+            for (var step = 0; step < n && textCount < 300; step++) {
+                textCount += 1;
+                $("#Screen").append("<p data-speed=" + sp + " class=\"MatrixText\" style=\"font-size: " + sp * 5 + "px;top:" + tp + "px; left: " + lf + "px;\">" + TextContent() + "</p>");
+            }
+        }
+
+        function UpdateScreen() {
+            MoveText();
+            DeleteText();
+            MakeText();
+        }
+
+        $(document).ready(function() {
+            textCount = 0;
+            setInterval(UpdateScreen, 100);
+        });
+    </script>
+</body>
 </html>
