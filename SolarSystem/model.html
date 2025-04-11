@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D Solar System Simulation – 科普比例 + UI</title>
+  <style>
+    html, body { margin:0; height:100%; overflow:hidden; background:#000; color:#fff; font-family:sans-serif; }
+    #info { position:absolute; top:10px; left:10px; z-index:1; }
+  </style>
+</head>
+<body>
+  <div id="info">3D Solar System – Three.js r0.155 (edu‑scale + UI)</div>
+
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.155.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.155.0/examples/jsm/controls/OrbitControls.js?module';
+    import { GUI } from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
+
+    /* === 場景 === */
+    const scene   = new THREE.Scene();
+    const camera  = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 5_000);
+    camera.position.set(0, 120, 350);
+
+    const renderer = new THREE.WebGLRenderer({ antialias:true });
+    renderer.setPixelRatio(devicePixelRatio);
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    /* === 參數 (可由 GUI 調整) === */
+    const params = {
+      speed: 0.05,
+      planetScale: 0.5,  // 地球半徑 → 場景單位
+      distExp: 0.6,
+      distScale: 15,
+      showOrbits: true,
+      showStars: true,
+      pause: false,
+      resetCamera(){ camera.position.set(0,120,350); controls.target.set(0,0,0); }
+    };
+
+    /* === GUI === */
+    const gui = new GUI();
+    gui.add(params,'speed',0,0.2,0.005).name('速度');
+    gui.add(params,'planetScale',0.1,2,0.05).name('行星大小').onFinishChange(applyScales);
+    gui.add(params,'distExp',0.2,1,0.05).name('距離指數').onFinishChange(applyScales);
+    gui.add(params,'distScale',5,40,1).name('距離比例').onFinishChange(applyScales);
+    gui.add(params,'showOrbits').name('顯示軌道').onChange(v=>orbitLines.forEach(l=>l.visible=v));
+    gui.add(params,'showStars').name('顯示星空').onChange(v=>stars.visible=v);
+    gui.add(params,'pause').name('暫停');
+    gui.add(params,'resetCamera').name('重置相機');
+
+    /* === 星空 === */
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(15_000*3);
+    for(let i=0;i<starPos.length;i++) starPos[i]=(Math.random()-0.5)*4000;
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos,3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({color:0xffffff,size:0.8}));
+    scene.add(stars);
+
+    /* === 光源 === */
+    scene.add(new THREE.PointLight(0xffffff,3,0,2));
+    scene.add(new THREE.AmbientLight(0xffffff,0.6));
+
+    /* === 太陽 === */
+    const sun = new THREE.Mesh(new THREE.SphereGeometry(5,64,64), new THREE.MeshBasicMaterial({color:0xFFFF55}));
+    scene.add(sun);
+
+    /* === 行星資料 === */
+    const planets=[
+      { name:'Mercury', radius:0.382, distAU:0.39, orbit:88, color:0xBFBFBF },
+      { name:'Venus',   radius:0.949, distAU:0.72, orbit:225, color:0xFFCF7F },
+      { name:'Earth',   radius:1,     distAU:1.00, orbit:365, color:0x3FA6FF, satellites:[
+          { name:'Moon', radius:0.272, distAU:0.00257, orbit:27.3, color:0xCCCCCC }
+      ]},
+      { name:'Mars', radius:0.532, distAU:1.52, orbit:687, color:0xFF4D0D, satellites:[
+          { name:'Phobos', radius:0.011, distAU:0.00094, orbit:0.32, color:0x999999 },
+          { name:'Deimos', radius:0.006, distAU:0.00234, orbit:1.26, color:0xAAAAAA }
+      ]},
+      { name:'Jupiter', radius:11.21, distAU:5.20, orbit:4333, color:0xD9A066, satellites:[
+          { name:'Io', radius:0.286, distAU:0.0028, orbit:1.77, color:0xFFC76F }
+      ]},
+      { name:'Saturn', radius:9.45,  distAU:9.54, orbit:10759, color:0xF7E08E },
+      { name:'Uranus', radius:4.01,  distAU:19.2, orbit:30687, color:0x7DEBFF },
+      { name:'Neptune',radius:3.88,  distAU:30.06,orbit:60190, color:0x2C4CFF }
+    ];
+
+    /* === 容器 === */
+    const planetGroups=[]; // {group, mesh, data}
+    const moonGroups=[];   // {group,data}
+    const orbitLines=[];   // THREE.Line for toggle
+
+    /* === 建立函式 === */
+    function scaleDistAU(au){ return params.distScale * Math.pow(au, params.distExp); }
+
+    function buildSystem(){
+      // 清空先前物件 (若重新縮放)
+      planetGroups.forEach(o=>scene.remove(o.group));
+      orbitLines.forEach(l=>scene.remove(l));
+      planetGroups.length=0; moonGroups.length=0; orbitLines.length=0;
+
+      planets.forEach(p=>{
+        const orbitGroup=new THREE.Group();
+        scene.add(orbitGroup);
+
+        const planetMat=new THREE.MeshStandardMaterial({color:p.color,metalness:0.2,roughness:0.5,emissive:p.color,emissiveIntensity:0.25});
+        const planetMesh=new THREE.Mesh(new THREE.SphereGeometry(p.radius*params.planetScale,64,64), planetMat);
+        const dist=scaleDistAU(p.distAU);
+        planetMesh.position.set(dist,0,0);
+        orbitGroup.add(planetMesh);
+
+        // 行星軌道
+        const curve=new THREE.EllipseCurve(0,0,dist,dist,0,2*Math.PI,false,0);
+        const orbitLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(180)), new THREE.LineBasicMaterial({color:0x555555}));
+        orbitLine.rotation.x=Math.PI/2;
+        orbitLine.visible=params.showOrbits;
+        scene.add(orbitLine);
+        orbitLines.push(orbitLine);
+
+        if(p.satellites){
+          p.satellites.forEach(m=>{
+            const moonGroup=new THREE.Group();
+            planetMesh.add(moonGroup);
+            const moonMat=new THREE.MeshStandardMaterial({color:m.color,metalness:0.1,roughness:0.6,emissive:m.color,emissiveIntensity:0.15});
+            const moonMesh=new THREE.Mesh(new THREE.SphereGeometry(m.radius*params.planetScale,32,32), moonMat);
+            const mDist=scaleDistAU(m.distAU);
+            moonMesh.position.set(mDist,0,0);
+            moonGroup.add(moonMesh);
+
+            const mCurve=new THREE.EllipseCurve(0,0,mDist,mDist,0,2*Math.PI,false,0);
+            const mLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints(mCurve.getPoints(90)), new THREE.LineBasicMaterial({color:0x777777}));
+            mLine.rotation.x=Math.PI/2;
+            mLine.visible=params.showOrbits;
+            planetMesh.add(mLine);
+
+            moonGroups.push({group:moonGroup,data:m});
+          });
+        }
+
+        planetGroups.push({group:orbitGroup,mesh:planetMesh,data:p});
+      });
+    }
+
+    buildSystem();
+
+    /* === 視窗調整 === */
+    addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+
+    /* === 動畫 === */
+    let prev=performance.now();
+    function animate(){
+      requestAnimationFrame(animate);
+      const now=performance.now();
+      const delta=(now-prev)/1000; prev=now;
+
+      if(!params.pause){
+        planetGroups.forEach(({group,mesh,data})=>{
+          group.rotation.y += (2*Math.PI/data.orbit)*delta*params.speed*365;
+          mesh.rotation.y  += (2*Math.PI/24)*delta*params.speed*24;
+        });
+        moonGroups.forEach(({group,data})=>{
+          group.rotation.y += (2*Math.PI/data.orbit)*delta*params.speed*365;
+        });
+      }
+
+      controls.update();
+      renderer.render(scene,camera);
+    }
+    animate();
+
+    /* === 重新套用比例 === */
+    function applyScales(){ buildSystem(); }
+
+    /* === 測試 === */
+    console.assert(planets.length===planetGroups.length,'❌ 行星數不符');
+    console.assert(moonGroups.some(m=>m.data.name==='Moon'),'❌ 月球未建立');
+    console.log('✅ UI 版模型載入完成');
+  </script>
+</body>
+</html>
