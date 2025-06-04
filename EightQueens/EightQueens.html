@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Eight Queens Puzzle</title>
+    <style>
+        table { border-collapse: collapse; margin: 20px auto; }
+        td {
+            width: 50px; height: 50px; text-align: center;
+            font-size: 32px; line-height: 50px; cursor: pointer;
+        }
+        .white { background: #f0d9b5; }
+        .black { background: #b58863; }
+        .conflict { background: #ff6961 !important; }
+        #message { text-align: center; font-size: 20px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <table id="board"></table>
+    <div id="message"></div>
+    <script>
+        const SIZE = 8;
+        const board = [];
+        const table = document.getElementById('board');
+        const message = document.getElementById('message');
+
+        function drawBoard() {
+            for (let r = 0; r < SIZE; r++) {
+                const row = document.createElement('tr');
+                board[r] = [];
+                for (let c = 0; c < SIZE; c++) {
+                    const cell = document.createElement('td');
+                    cell.className = (r + c) % 2 === 0 ? 'white' : 'black';
+                    cell.addEventListener('click', () => toggleQueen(r, c));
+                    row.appendChild(cell);
+                    board[r][c] = false;
+                }
+                table.appendChild(row);
+            }
+        }
+
+        function toggleQueen(r, c) {
+            board[r][c] = !board[r][c];
+            render();
+            checkStatus();
+        }
+
+        function render() {
+            for (let r = 0; r < SIZE; r++) {
+                for (let c = 0; c < SIZE; c++) {
+                    const cell = table.rows[r].cells[c];
+                    cell.textContent = board[r][c] ? '♛' : '';
+                    cell.classList.remove('conflict');
+                }
+            }
+            const conflicts = findConflicts();
+            conflicts.forEach(({r, c}) => {
+                table.rows[r].cells[c].classList.add('conflict');
+            });
+        }
+
+        function findConflicts() {
+            const queens = [];
+            for (let r = 0; r < SIZE; r++) {
+                for (let c = 0; c < SIZE; c++) {
+                    if (board[r][c]) queens.push({r, c});
+                }
+            }
+            const conflicts = [];
+            for (let i = 0; i < queens.length; i++) {
+                for (let j = i + 1; j < queens.length; j++) {
+                    const a = queens[i];
+                    const b = queens[j];
+                    if (a.r === b.r || a.c === b.c ||
+                        Math.abs(a.r - b.r) === Math.abs(a.c - b.c)) {
+                        conflicts.push(a, b);
+                    }
+                }
+            }
+            return conflicts;
+        }
+
+        function checkStatus() {
+            const queens = board.flat().filter(Boolean).length;
+            const conflicts = findConflicts();
+            if (queens === SIZE && conflicts.length === 0) {
+                message.textContent = 'Congratulations! You solved it!';
+            } else {
+                message.textContent = `Queens placed: ${queens}`;
+            }
+        }
+
+        drawBoard();
+        render();
+        checkStatus();
+    </script>
+</body>
+</html>
